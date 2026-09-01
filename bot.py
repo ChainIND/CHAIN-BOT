@@ -156,7 +156,7 @@ async def button_handler(update: Update, context):
 
 
     # --------------------------------------
-    # ADB
+    # ADB TOOLS
     # --------------------------------------
 
     elif data == "adb":
@@ -164,18 +164,34 @@ async def button_handler(update: Update, context):
         keyboard = [
             [
                 InlineKeyboardButton(
-                    "📱 ADB COMMANDS",
-                    callback_data="adb_commands"
+                    "📱 DEVICE INFO",
+                    callback_data="adb_info"
+                ),
+                InlineKeyboardButton(
+                    "🔄 REBOOT",
+                    callback_data="adb_reboot"
                 )
             ],
             [
                 InlineKeyboardButton(
-                    "🔄 REBOOT",
-                    callback_data="adb_reboot"
+                    "🔁 RECOVERY",
+                    callback_data="adb_recovery"
                 ),
                 InlineKeyboardButton(
-                    "ℹ️ DEVICE INFO",
-                    callback_data="adb_info"
+                    "⚡ BOOTLOADER",
+                    callback_data="adb_bootloader"
+                )
+            ],
+            [
+                InlineKeyboardButton(
+                    "📦 PACKAGE INFO",
+                    callback_data="adb_packages"
+                )
+            ],
+            [
+                InlineKeyboardButton(
+                    "🧹 APP DATA",
+                    callback_data="adb_appdata"
                 )
             ],
             [
@@ -188,8 +204,10 @@ async def button_handler(update: Update, context):
 
         text = (
             "🔧 <b>ADB TOOLS</b>\n\n"
-            "Android Debug Bridge Tools\n\n"
-            "Select an option:"
+            "━━━━━━━━━━━━━━━━━━\n"
+            "📱 Android Debug Bridge\n"
+            "━━━━━━━━━━━━━━━━━━\n\n"
+            "Select a tool:"
         )
 
         await query.edit_message_text(
@@ -423,6 +441,10 @@ async def button_handler(update: Update, context):
         "adb_commands",
         "adb_reboot",
         "adb_info",
+        "adb_recovery",
+        "adb_bootloader",
+        "adb_packages",
+        "adb_appdata",
         "fastboot_commands",
         "fastboot_info",
         "download_mode",
