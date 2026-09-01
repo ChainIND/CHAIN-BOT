@@ -1,6 +1,7 @@
 import os
 import logging
-from flask import Flask, request
+
+from quart import Quart, request
 from telegram import Update
 from telegram.ext import Application, CommandHandler
 
@@ -19,7 +20,7 @@ if not TOKEN:
 if not RENDER_EXTERNAL_URL:
     raise RuntimeError("RENDER_EXTERNAL_URL is missing")
 
-app = Flask(__name__)
+app = Quart(__name__)
 
 telegram_app = Application.builder().token(TOKEN).build()
 
@@ -54,20 +55,20 @@ telegram_app.add_handler(CommandHandler("help", help_command))
 telegram_app.add_handler(CommandHandler("status", status))
 
 
-@app.route("/")
-def home():
+@app.get("/")
+async def home():
     return "CHAIN Bot is Online 🟢", 200
 
 
-@app.route("/health")
-def health():
+@app.get("/health")
+async def health():
     return "OK", 200
 
 
-@app.route("/webhook", methods=["POST"])
+@app.post("/webhook")
 async def webhook():
     try:
-        data = request.get_json(force=True)
+        data = await request.get_json()
 
         update = Update.de_json(
             data,
@@ -78,13 +79,16 @@ async def webhook():
 
         return "OK", 200
 
-    except Exception as e:
+    except Exception:
         logging.exception("Webhook error")
         return "ERROR", 500
 
 
-async def initialize_bot():
+@app.before_serving
+async def startup():
+
     await telegram_app.initialize()
+    await telegram_app.start()
 
     webhook_url = f"{RENDER_EXTERNAL_URL}/webhook"
 
@@ -100,11 +104,14 @@ async def initialize_bot():
     logging.info("=================================")
 
 
+@app.after_serving
+async def shutdown():
+
+    await telegram_app.stop()
+    await telegram_app.shutdown()
+
+
 if __name__ == "__main__":
-    import asyncio
-
-    asyncio.run(initialize_bot())
-
     app.run(
         host="0.0.0.0",
         port=PORT
