@@ -9,10 +9,18 @@ from telegram.ext import (
     CallbackQueryHandler,
 )
 
+# ==========================================
+# LOGGING
+# ==========================================
+
 logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
     level=logging.INFO
 )
+
+# ==========================================
+# ENVIRONMENT
+# ==========================================
 
 TOKEN = os.getenv("BOT_TOKEN")
 PORT = int(os.getenv("PORT", "10000"))
@@ -24,7 +32,15 @@ if not TOKEN:
 if not RENDER_EXTERNAL_URL:
     raise RuntimeError("RENDER_EXTERNAL_URL is missing")
 
+# ==========================================
+# QUART APP
+# ==========================================
+
 app = Quart(__name__)
+
+# ==========================================
+# TELEGRAM APPLICATION
+# ==========================================
 
 telegram_app = Application.builder().token(TOKEN).build()
 
@@ -37,19 +53,40 @@ def main_menu():
 
     keyboard = [
         [
-            InlineKeyboardButton("🔧 ADB TOOLS", callback_data="adb"),
-            InlineKeyboardButton("⚡ FASTBOOT", callback_data="fastboot")
+            InlineKeyboardButton(
+                "🔧 ADB TOOLS",
+                callback_data="adb"
+            ),
+            InlineKeyboardButton(
+                "⚡ FASTBOOT",
+                callback_data="fastboot"
+            )
         ],
         [
-            InlineKeyboardButton("📱 SAMSUNG", callback_data="samsung"),
-            InlineKeyboardButton("📂 FIRMWARE", callback_data="firmware")
+            InlineKeyboardButton(
+                "📱 SAMSUNG",
+                callback_data="samsung"
+            ),
+            InlineKeyboardButton(
+                "📂 FIRMWARE",
+                callback_data="firmware"
+            )
         ],
         [
-            InlineKeyboardButton("🛠️ DEVICE INFO", callback_data="device"),
+            InlineKeyboardButton(
+                "🛠️ DEVICE INFO",
+                callback_data="device"
+            )
         ],
         [
-            InlineKeyboardButton("📢 UPDATES", callback_data="updates"),
-            InlineKeyboardButton("👨‍💻 SUPPORT", callback_data="support")
+            InlineKeyboardButton(
+                "📢 UPDATES",
+                callback_data="updates"
+            ),
+            InlineKeyboardButton(
+                "👨‍💻 SUPPORT",
+                callback_data="support"
+            )
         ]
     ]
 
@@ -57,7 +94,57 @@ def main_menu():
 
 
 # ==========================================
-# START
+# ADB MENU
+# ==========================================
+
+def adb_menu():
+
+    keyboard = [
+        [
+            InlineKeyboardButton(
+                "📱 DEVICE INFO",
+                callback_data="adb_info"
+            ),
+            InlineKeyboardButton(
+                "🔄 REBOOT",
+                callback_data="adb_reboot"
+            )
+        ],
+        [
+            InlineKeyboardButton(
+                "🔁 RECOVERY",
+                callback_data="adb_recovery"
+            ),
+            InlineKeyboardButton(
+                "⚡ BOOTLOADER",
+                callback_data="adb_bootloader"
+            )
+        ],
+        [
+            InlineKeyboardButton(
+                "📦 PACKAGE INFO",
+                callback_data="adb_packages"
+            )
+        ],
+        [
+            InlineKeyboardButton(
+                "🧹 APP DATA",
+                callback_data="adb_appdata"
+            )
+        ],
+        [
+            InlineKeyboardButton(
+                "🔙 BACK",
+                callback_data="menu"
+            )
+        ]
+    ]
+
+    return InlineKeyboardMarkup(keyboard)
+
+
+# ==========================================
+# START COMMAND
 # ==========================================
 
 async def start(update: Update, context):
@@ -78,7 +165,7 @@ async def start(update: Update, context):
 
 
 # ==========================================
-# HELP
+# HELP COMMAND
 # ==========================================
 
 async def help_command(update: Update, context):
@@ -100,7 +187,7 @@ async def help_command(update: Update, context):
 
 
 # ==========================================
-# STATUS
+# STATUS COMMAND
 # ==========================================
 
 async def status(update: Update, context):
@@ -133,10 +220,9 @@ async def button_handler(update: Update, context):
 
     data = query.data
 
-
-    # --------------------------------------
+    # ======================================
     # MAIN MENU
-    # --------------------------------------
+    # ======================================
 
     if data == "menu":
 
@@ -154,53 +240,11 @@ async def button_handler(update: Update, context):
             reply_markup=main_menu()
         )
 
-
-    # --------------------------------------
+    # ======================================
     # ADB TOOLS
-    # --------------------------------------
+    # ======================================
 
     elif data == "adb":
-
-        keyboard = [
-            [
-                InlineKeyboardButton(
-                    "📱 DEVICE INFO",
-                    callback_data="adb_info"
-                ),
-                InlineKeyboardButton(
-                    "🔄 REBOOT",
-                    callback_data="adb_reboot"
-                )
-            ],
-            [
-                InlineKeyboardButton(
-                    "🔁 RECOVERY",
-                    callback_data="adb_recovery"
-                ),
-                InlineKeyboardButton(
-                    "⚡ BOOTLOADER",
-                    callback_data="adb_bootloader"
-                )
-            ],
-            [
-                InlineKeyboardButton(
-                    "📦 PACKAGE INFO",
-                    callback_data="adb_packages"
-                )
-            ],
-            [
-                InlineKeyboardButton(
-                    "🧹 APP DATA",
-                    callback_data="adb_appdata"
-                )
-            ],
-            [
-                InlineKeyboardButton(
-                    "🔙 BACK",
-                    callback_data="menu"
-                )
-            ]
-        ]
 
         text = (
             "🔧 <b>ADB TOOLS</b>\n\n"
@@ -213,13 +257,222 @@ async def button_handler(update: Update, context):
         await query.edit_message_text(
             text,
             parse_mode="HTML",
+            reply_markup=adb_menu()
+        )
+
+    # ======================================
+    # ADB DEVICE INFO
+    # ======================================
+
+    elif data == "adb_info":
+
+        keyboard = [
+            [
+                InlineKeyboardButton(
+                    "🔄 CHECK AGAIN",
+                    callback_data="adb_info"
+                )
+            ],
+            [
+                InlineKeyboardButton(
+                    "🔙 ADB TOOLS",
+                    callback_data="adb"
+                )
+            ]
+        ]
+
+        text = (
+            "📱 <b>ADB DEVICE INFO</b>\n\n"
+            "━━━━━━━━━━━━━━━━━━\n"
+            "🔌 Connection: <b>NOT CONNECTED</b>\n"
+            "━━━━━━━━━━━━━━━━━━\n\n"
+            "⚠️ No CHAIN ADB Agent connected.\n\n"
+            "💡 Connect the CHAIN ADB Agent to "
+            "retrieve device information."
+        )
+
+        await query.edit_message_text(
+            text,
+            parse_mode="HTML",
             reply_markup=InlineKeyboardMarkup(keyboard)
         )
 
+    # ======================================
+    # ADB REBOOT
+    # ======================================
 
-    # --------------------------------------
+    elif data == "adb_reboot":
+
+        keyboard = [
+            [
+                InlineKeyboardButton(
+                    "🔄 CONFIRM REBOOT",
+                    callback_data="confirm_reboot"
+                )
+            ],
+            [
+                InlineKeyboardButton(
+                    "🔙 ADB TOOLS",
+                    callback_data="adb"
+                )
+            ]
+        ]
+
+        text = (
+            "🔄 <b>ADB REBOOT</b>\n\n"
+            "This command will reboot the connected "
+            "Android device.\n\n"
+            "⚠️ CHAIN ADB Agent is required."
+        )
+
+        await query.edit_message_text(
+            text,
+            parse_mode="HTML",
+            reply_markup=InlineKeyboardMarkup(keyboard)
+        )
+
+    # ======================================
+    # CONFIRM REBOOT
+    # ======================================
+
+    elif data == "confirm_reboot":
+
+        keyboard = [
+            [
+                InlineKeyboardButton(
+                    "🔙 ADB TOOLS",
+                    callback_data="adb"
+                )
+            ]
+        ]
+
+        text = (
+            "⚠️ <b>ADB AGENT NOT CONNECTED</b>\n\n"
+            "The reboot command cannot be sent because "
+            "no CHAIN ADB Agent is connected."
+        )
+
+        await query.edit_message_text(
+            text,
+            parse_mode="HTML",
+            reply_markup=InlineKeyboardMarkup(keyboard)
+        )
+
+    # ======================================
+    # ADB RECOVERY
+    # ======================================
+
+    elif data == "adb_recovery":
+
+        keyboard = [
+            [
+                InlineKeyboardButton(
+                    "🔙 ADB TOOLS",
+                    callback_data="adb"
+                )
+            ]
+        ]
+
+        text = (
+            "🔁 <b>ADB RECOVERY</b>\n\n"
+            "⚠️ CHAIN ADB Agent is required.\n\n"
+            "This feature will send the recovery reboot "
+            "command to the connected device."
+        )
+
+        await query.edit_message_text(
+            text,
+            parse_mode="HTML",
+            reply_markup=InlineKeyboardMarkup(keyboard)
+        )
+
+    # ======================================
+    # ADB BOOTLOADER
+    # ======================================
+
+    elif data == "adb_bootloader":
+
+        keyboard = [
+            [
+                InlineKeyboardButton(
+                    "🔙 ADB TOOLS",
+                    callback_data="adb"
+                )
+            ]
+        ]
+
+        text = (
+            "⚡ <b>ADB BOOTLOADER</b>\n\n"
+            "⚠️ CHAIN ADB Agent is required.\n\n"
+            "This feature will reboot the connected "
+            "device into bootloader mode."
+        )
+
+        await query.edit_message_text(
+            text,
+            parse_mode="HTML",
+            reply_markup=InlineKeyboardMarkup(keyboard)
+        )
+
+    # ======================================
+    # ADB PACKAGE INFO
+    # ======================================
+
+    elif data == "adb_packages":
+
+        keyboard = [
+            [
+                InlineKeyboardButton(
+                    "🔙 ADB TOOLS",
+                    callback_data="adb"
+                )
+            ]
+        ]
+
+        text = (
+            "📦 <b>PACKAGE INFO</b>\n\n"
+            "⚠️ CHAIN ADB Agent is required.\n\n"
+            "This feature will retrieve installed "
+            "Android package information."
+        )
+
+        await query.edit_message_text(
+            text,
+            parse_mode="HTML",
+            reply_markup=InlineKeyboardMarkup(keyboard)
+        )
+
+    # ======================================
+    # ADB APP DATA
+    # ======================================
+
+    elif data == "adb_appdata":
+
+        keyboard = [
+            [
+                InlineKeyboardButton(
+                    "🔙 ADB TOOLS",
+                    callback_data="adb"
+                )
+            ]
+        ]
+
+        text = (
+            "🧹 <b>APP DATA</b>\n\n"
+            "⚠️ CHAIN ADB Agent is required.\n\n"
+            "This feature will allow supported app "
+            "data operations through ADB."
+        )
+
+        await query.edit_message_text(
+            text,
+            parse_mode="HTML",
+            reply_markup=InlineKeyboardMarkup(keyboard)
+        )
+
+    # ======================================
     # FASTBOOT
-    # --------------------------------------
+    # ======================================
 
     elif data == "fastboot":
 
@@ -256,10 +509,9 @@ async def button_handler(update: Update, context):
             reply_markup=InlineKeyboardMarkup(keyboard)
         )
 
-
-    # --------------------------------------
+    # ======================================
     # SAMSUNG
-    # --------------------------------------
+    # ======================================
 
     elif data == "samsung":
 
@@ -296,10 +548,9 @@ async def button_handler(update: Update, context):
             reply_markup=InlineKeyboardMarkup(keyboard)
         )
 
-
-    # --------------------------------------
+    # ======================================
     # FIRMWARE
-    # --------------------------------------
+    # ======================================
 
     elif data == "firmware":
 
@@ -336,10 +587,9 @@ async def button_handler(update: Update, context):
             reply_markup=InlineKeyboardMarkup(keyboard)
         )
 
-
-    # --------------------------------------
-    # DEVICE INFO
-    # --------------------------------------
+    # ======================================
+    # GENERAL DEVICE INFO
+    # ======================================
 
     elif data == "device":
 
@@ -375,10 +625,9 @@ async def button_handler(update: Update, context):
             reply_markup=InlineKeyboardMarkup(keyboard)
         )
 
-
-    # --------------------------------------
+    # ======================================
     # UPDATES
-    # --------------------------------------
+    # ======================================
 
     elif data == "updates":
 
@@ -403,10 +652,9 @@ async def button_handler(update: Update, context):
             reply_markup=InlineKeyboardMarkup(keyboard)
         )
 
-
-    # --------------------------------------
+    # ======================================
     # SUPPORT
-    # --------------------------------------
+    # ======================================
 
     elif data == "support":
 
@@ -432,19 +680,11 @@ async def button_handler(update: Update, context):
             reply_markup=InlineKeyboardMarkup(keyboard)
         )
 
-
-    # --------------------------------------
-    # PLACEHOLDER PAGES
-    # --------------------------------------
+    # ======================================
+    # PLACEHOLDER FEATURES
+    # ======================================
 
     elif data in [
-        "adb_commands",
-        "adb_reboot",
-        "adb_info",
-        "adb_recovery",
-        "adb_bootloader",
-        "adb_packages",
-        "adb_appdata",
         "fastboot_commands",
         "fastboot_info",
         "download_mode",
@@ -456,7 +696,7 @@ async def button_handler(update: Update, context):
         keyboard = [
             [
                 InlineKeyboardButton(
-                    "🔙 BACK",
+                    "🔙 MAIN MENU",
                     callback_data="menu"
                 )
             ]
@@ -477,7 +717,7 @@ async def button_handler(update: Update, context):
 
 
 # ==========================================
-# HANDLERS
+# TELEGRAM HANDLERS
 # ==========================================
 
 telegram_app.add_handler(
