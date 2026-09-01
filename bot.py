@@ -144,6 +144,86 @@ def adb_menu():
 
 
 # ==========================================
+# FIRMWARE MENU
+# ==========================================
+
+def firmware_menu():
+
+    keyboard = [
+        [
+            InlineKeyboardButton(
+                "🇰🇷 SAMSUNG",
+                callback_data="fw_samsung"
+            )
+        ],
+        [
+            InlineKeyboardButton(
+                "🇨🇳 XIAOMI",
+                callback_data="fw_xiaomi"
+            ),
+            InlineKeyboardButton(
+                "🇨🇳 REDMI",
+                callback_data="fw_redmi"
+            )
+        ],
+        [
+            InlineKeyboardButton(
+                "🇨🇳 POCO",
+                callback_data="fw_poco"
+            )
+        ],
+        [
+            InlineKeyboardButton(
+                "🇨🇳 REALME",
+                callback_data="fw_realme"
+            ),
+            InlineKeyboardButton(
+                "🇨🇳 OPPO",
+                callback_data="fw_oppo"
+            )
+        ],
+        [
+            InlineKeyboardButton(
+                "🇨🇳 VIVO",
+                callback_data="fw_vivo"
+            ),
+            InlineKeyboardButton(
+                "🇨🇳 iQOO",
+                callback_data="fw_iqoo"
+            )
+        ],
+        [
+            InlineKeyboardButton(
+                "🇨🇳 ONEPLUS",
+                callback_data="fw_oneplus"
+            ),
+            InlineKeyboardButton(
+                "🇺🇸 MOTOROLA",
+                callback_data="fw_motorola"
+            )
+        ],
+        [
+            InlineKeyboardButton(
+                "🇨🇳 TECNO",
+                callback_data="fw_tecno"
+            ),
+            InlineKeyboardButton(
+                "🇨🇳 INFINIX",
+                callback_data="fw_infinix"
+            )
+        ],
+        [
+            InlineKeyboardButton(
+                "🔙 BACK",
+                callback_data="menu"
+            )
+        ]
+    ]
+
+    return InlineKeyboardMarkup(keyboard)
+
+
+# ==========================================
 # START COMMAND
 # ==========================================
 
@@ -153,8 +233,9 @@ async def start(update: Update, context):
         "👋 <b>Welcome to CHAIN Bot!</b>\n\n"
         "🛠️ <b>INDIAN JTAG TEAM</b>\n\n"
         "━━━━━━━━━━━━━━━━━━\n"
-        "🤖 Select an option below\n"
-        "━━━━━━━━━━━━━━━━━━"
+        "📂 Firmware • ADB • Fastboot\n"
+        "━━━━━━━━━━━━━━━━━━\n\n"
+        "🤖 Select an option below"
     )
 
     await update.message.reply_text(
@@ -176,7 +257,9 @@ async def help_command(update: Update, context):
         "▶️ /start - Main Menu\n"
         "▶️ /help - Help\n"
         "▶️ /status - Bot Status\n\n"
-        "🛠️ Use the buttons to navigate the bot."
+        "📂 Firmware section provides "
+        "firmware source links.\n\n"
+        "🛠️ Use the buttons to navigate."
     )
 
     await update.message.reply_text(
@@ -198,6 +281,7 @@ async def status(update: Update, context):
         "⚡ Status: <b>ONLINE</b>\n"
         "🌐 Server: <b>RENDER</b>\n"
         "🔗 Webhook: <b>ACTIVE</b>\n"
+        "📂 Firmware: <b>AVAILABLE</b>\n"
         "━━━━━━━━━━━━━━━━━━"
     )
 
@@ -228,10 +312,11 @@ async def button_handler(update: Update, context):
 
         text = (
             "👋 <b>CHAIN BOT</b>\n\n"
-            "🛠️ INDIAN JTAG TEAM\n\n"
+            "🛠️ <b>INDIAN JTAG TEAM</b>\n\n"
             "━━━━━━━━━━━━━━━━━━\n"
-            "🤖 Select an option below\n"
-            "━━━━━━━━━━━━━━━━━━"
+            "📂 Firmware • ADB • Fastboot\n"
+            "━━━━━━━━━━━━━━━━━━\n\n"
+            "🤖 Select an option below"
         )
 
         await query.edit_message_text(
@@ -287,8 +372,7 @@ async def button_handler(update: Update, context):
             "🔌 Connection: <b>NOT CONNECTED</b>\n"
             "━━━━━━━━━━━━━━━━━━\n\n"
             "⚠️ No CHAIN ADB Agent connected.\n\n"
-            "💡 Connect the CHAIN ADB Agent to "
-            "retrieve device information."
+            "💡 This feature is currently unavailable."
         )
 
         await query.edit_message_text(
@@ -510,7 +594,7 @@ async def button_handler(update: Update, context):
         )
 
     # ======================================
-    # SAMSUNG
+    # SAMSUNG TOOLS
     # ======================================
 
     elif data == "samsung":
@@ -549,36 +633,225 @@ async def button_handler(update: Update, context):
         )
 
     # ======================================
-    # FIRMWARE
+    # FIRMWARE MENU
     # ======================================
 
     elif data == "firmware":
 
+        text = (
+            "📂 <b>CHAIN FIRMWARE</b>\n\n"
+            "━━━━━━━━━━━━━━━━━━\n"
+            "📱 Select your device brand\n"
+            "━━━━━━━━━━━━━━━━━━\n\n"
+            "🌐 Firmware sources are provided "
+            "for the selected brand."
+        )
+
+        await query.edit_message_text(
+            text,
+            parse_mode="HTML",
+            reply_markup=firmware_menu()
+        )
+
+    # ======================================
+    # SAMSUNG FIRMWARE
+    # ======================================
+
+    elif data == "fw_samsung":
+
         keyboard = [
             [
                 InlineKeyboardButton(
-                    "📦 FIRMWARE INFO",
-                    callback_data="firmware_info"
+                    "🌐 OPEN SAMFW",
+                    url="https://samfw.com/"
                 )
             ],
             [
                 InlineKeyboardButton(
-                    "🔍 CHECK FIRMWARE",
-                    callback_data="check_firmware"
-                )
-            ],
-            [
-                InlineKeyboardButton(
-                    "🔙 BACK",
-                    callback_data="menu"
+                    "🔙 FIRMWARE",
+                    callback_data="firmware"
                 )
             ]
         ]
 
         text = (
-            "📂 <b>FIRMWARE TOOLS</b>\n\n"
-            "Firmware utilities and information\n\n"
-            "Select an option:"
+            "🇰🇷 <b>SAMSUNG FIRMWARE</b>\n\n"
+            "━━━━━━━━━━━━━━━━━━\n"
+            "📦 Source: <b>SamFW</b>\n"
+            "📱 Samsung firmware\n"
+            "🔎 Search by model\n"
+            "🌍 CSC / Region support\n"
+            "━━━━━━━━━━━━━━━━━━\n\n"
+            "Tap below to open the firmware source."
+        )
+
+        await query.edit_message_text(
+            text,
+            parse_mode="HTML",
+            reply_markup=InlineKeyboardMarkup(keyboard)
+        )
+
+    # ======================================
+    # XIAOMI FIRMWARE
+    # ======================================
+
+    elif data == "fw_xiaomi":
+
+        keyboard = [
+            [
+                InlineKeyboardButton(
+                    "🌐 OPEN MIFIRM",
+                    url="https://mifirm.net/"
+                )
+            ],
+            [
+                InlineKeyboardButton(
+                    "🔙 FIRMWARE",
+                    callback_data="firmware"
+                )
+            ]
+        ]
+
+        text = (
+            "🇨🇳 <b>XIAOMI FIRMWARE</b>\n\n"
+            "━━━━━━━━━━━━━━━━━━\n"
+            "📦 Source: <b>MiFirm</b>\n"
+            "📱 Xiaomi firmware\n"
+            "⚡ Fastboot ROM\n"
+            "📦 Recovery ROM\n"
+            "━━━━━━━━━━━━━━━━━━\n\n"
+            "Tap below to search Xiaomi firmware."
+        )
+
+        await query.edit_message_text(
+            text,
+            parse_mode="HTML",
+            reply_markup=InlineKeyboardMarkup(keyboard)
+        )
+
+    # ======================================
+    # REDMI FIRMWARE
+    # ======================================
+
+    elif data == "fw_redmi":
+
+        keyboard = [
+            [
+                InlineKeyboardButton(
+                    "🌐 OPEN MIFIRM",
+                    url="https://mifirm.net/"
+                )
+            ],
+            [
+                InlineKeyboardButton(
+                    "🔙 FIRMWARE",
+                    callback_data="firmware"
+                )
+            ]
+        ]
+
+        text = (
+            "🇨🇳 <b>REDMI FIRMWARE</b>\n\n"
+            "━━━━━━━━━━━━━━━━━━\n"
+            "📦 Source: <b>MiFirm</b>\n"
+            "📱 Redmi firmware\n"
+            "⚡ Fastboot ROM\n"
+            "📦 Recovery ROM\n"
+            "━━━━━━━━━━━━━━━━━━\n\n"
+            "Tap below to search Redmi firmware."
+        )
+
+        await query.edit_message_text(
+            text,
+            parse_mode="HTML",
+            reply_markup=InlineKeyboardMarkup(keyboard)
+        )
+
+    # ======================================
+    # POCO FIRMWARE
+    # ======================================
+
+    elif data == "fw_poco":
+
+        keyboard = [
+            [
+                InlineKeyboardButton(
+                    "🌐 OPEN MIFIRM",
+                    url="https://mifirm.net/"
+                )
+            ],
+            [
+                InlineKeyboardButton(
+                    "🔙 FIRMWARE",
+                    callback_data="firmware"
+                )
+            ]
+        ]
+
+        text = (
+            "🇨🇳 <b>POCO FIRMWARE</b>\n\n"
+            "━━━━━━━━━━━━━━━━━━\n"
+            "📦 Source: <b>MiFirm</b>\n"
+            "📱 POCO firmware\n"
+            "⚡ Fastboot ROM\n"
+            "📦 Recovery ROM\n"
+            "━━━━━━━━━━━━━━━━━━\n\n"
+            "Tap below to search POCO firmware."
+        )
+
+        await query.edit_message_text(
+            text,
+            parse_mode="HTML",
+            reply_markup=InlineKeyboardMarkup(keyboard)
+        )
+
+    # ======================================
+    # OTHER BRAND FIRMWARE
+    # ======================================
+
+    elif data in [
+        "fw_realme",
+        "fw_oppo",
+        "fw_vivo",
+        "fw_iqoo",
+        "fw_oneplus",
+        "fw_motorola",
+        "fw_tecno",
+        "fw_infinix"
+    ]:
+
+        brand_names = {
+            "fw_realme": "REALME",
+            "fw_oppo": "OPPO",
+            "fw_vivo": "VIVO",
+            "fw_iqoo": "iQOO",
+            "fw_oneplus": "ONEPLUS",
+            "fw_motorola": "MOTOROLA",
+            "fw_tecno": "TECNO",
+            "fw_infinix": "INFINIX"
+        }
+
+        brand = brand_names.get(
+            data,
+            "DEVICE"
+        )
+
+        keyboard = [
+            [
+                InlineKeyboardButton(
+                    "🔙 FIRMWARE",
+                    callback_data="firmware"
+                )
+            ]
+        ]
+
+        text = (
+            f"📱 <b>{brand} FIRMWARE</b>\n\n"
+            "━━━━━━━━━━━━━━━━━━\n"
+            "🚧 Source integration is coming soon.\n"
+            "━━━━━━━━━━━━━━━━━━\n\n"
+            "CHAIN Team will add a verified "
+            "firmware source for this brand."
         )
 
         await query.edit_message_text(
@@ -688,9 +961,7 @@ async def button_handler(update: Update, context):
         "fastboot_commands",
         "fastboot_info",
         "download_mode",
-        "samsung_tools",
-        "firmware_info",
-        "check_firmware"
+        "samsung_tools"
     ]:
 
         keyboard = [
